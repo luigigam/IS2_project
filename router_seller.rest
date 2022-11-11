@@ -1,0 +1,48 @@
+// GET ALL SELLERS
+GET http://localhost:3000/api/sellers
+
+###
+
+// GET ONE SELLER
+GET http://localhost:3000/api/sellers/63651f0b9564a886816f57b8
+
+###
+
+// CREATE ONE SELLER
+POST http://localhost:3000/api/sellers
+Content-Type: application/json
+
+{
+    "username": "Paolo",
+    "password": "mimmo",
+    "email": "monna@lisa.it",
+    "business_name": "uva&nm",
+    "adress": "Via Lillone, 104",
+    "phone_number": "666666666"
+}
+
+###
+
+// DELETE ONE SELLER
+DELETE http://localhost:3000/api/sellers/636948cd2f0f1a6486839822
+
+###
+
+// MODIFY ONE SELLER
+PATCH http://localhost:3000/api/sellers/63651f0b9564a886816f57b8
+Content-Type: application/json
+
+{
+    "password": "morra"
+}
+
+###
+
+//  LOGIN USER
+POST http://localhost:3000/api/sellers/login
+Content-Type: application/json
+
+{
+    "username": "Paolo",
+    "password": "mmmo"
+}

@@ -1,0 +1,45 @@
+// GET ALL USERS
+GET http://localhost:3000/api/users
+
+###
+
+// GET ONE USER
+GET http://localhost:3000/api/users/6367ed6e4f6194a1c425c7f4
+
+###
+
+// CREATE ONE USER
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "username": "Test1",
+    "password": "pippo",
+    "email": "lolla@poppo.com"
+}
+
+###
+
+// DELETE ONE USER
+DELETE http://localhost:3000/api/users/636a3f68a124971608492ebb
+
+###
+
+// MODIFY ONE USER
+PATCH http://localhost:3000/api/sers/6367ed6e4f6194a1c425c7f4
+Content-Type: application/json
+
+{
+    "password": "morra"
+}
+
+###
+
+//  LOGIN USER
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+    "username": "Test1",
+    "password": "pipo"
+}
