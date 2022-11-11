@@ -1,4 +1,4 @@
-### APPNAME ###
+# APPNAME #
 
 This project is the result of the course Ingegneria del Software 2,
 APPNAME is an e*commerce stile web service with the focus on national wines and spirits.
@@ -16,4 +16,5 @@ APPNAME is an e*commerce stile web service with the focus on national wines and 
 # how to run the project:\n
     $ npm run devStart
 
-# credits: Luigi Gammino, unitn
+# credits
+Luigi Gammino, unitn
