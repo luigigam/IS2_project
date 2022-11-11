@@ -1,8 +1,11 @@
+require('dotenv').config()
+
 const express = require('express')
 const router = express.Router()
 const Seller = require('../models/seller')
 const hashing = require('../middlewares/encrypt_pssw')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 // Getting all
 router.get('/', async (req, res) => {
@@ -49,8 +52,8 @@ router.patch('/:id', getSeller, async (req, res) => {
     if (req.body.business_name != null) {
         res.seller.business_name = req.body.business_name
     }
-    if (req.body.address != null) {
-        res.seller.address = req.body.address
+    if (req.body.adress != null) {
+        res.seller.adress = req.body.adress
     }
     if (req.body.phone_number != null) {
         res.seller.phone_number = req.body.phone_number
@@ -81,7 +84,8 @@ router.post('/login', async (req, res) => {
     }
     try {
         if (await bcrypt.compare(req.body.password, seller.password)) {
-            res.send('Success')
+            const accessToken = jwt.sign(seller.toJSON(), process.env.ACCESS_TOKEN_SECRET)
+            res.json({ accessToken: accessToken })
         } else {
             res.send('Not Allowed')
         }

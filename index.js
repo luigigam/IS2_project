@@ -21,4 +21,7 @@ mainRouter.use('/users', usersRouter)
 const sellersRouter = require('./src/routers/sellers')
 mainRouter.use('/sellers', sellersRouter)
 
+const productsRouter = require('./src/routers/products')
+mainRouter.use('/products', productsRouter)
+
 app.listen(3000, () => console.log('Server running on port ', 3000))
