@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 // Getting all
-router.get('/', async (req, res) => {
+router.get('/', async (req, res) => {const sellers = await Seller.find()
     try {
         const sellers = await Seller.find()
         res.json(sellers)
@@ -109,4 +109,5 @@ async function getSeller(req, res, next) {
     next()
 }
 
+module.exports = getSeller
 module.exports = router

@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const Product = require('../models/product')
 const Seller = require('../models/seller')
+const authenticateToken = require('../middlewares/authenticateToken')
+const getSeller = require('../routers/sellers')
 
 // Getting all
 router.get('/', async (req, res) => {
@@ -22,7 +24,8 @@ router.post('/', async (req, res) => {
     const product = new Product({
         name: req.body.name,
         place_of_production: req.body.place_of_production,
-        availability: true
+        availability: true,
+        seller: req.body.seller
         })
     try {
         const newProduct = await product.save()
@@ -55,6 +58,16 @@ router.delete('/:id', getProduct, async (req, res) => {
     try {
         await res.product.remove()
         res.json({ message: 'Deleted Product' })
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+})
+
+// Getting all of one seller
+router.get('/:id', getSeller, authenticateToken, async (req, res) => {
+    try {
+        const products = await Product.find()
+        res.json(products.filter(product => product.seller === req.seller.business_name))
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
