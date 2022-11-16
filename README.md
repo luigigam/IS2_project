@@ -1,7 +1,7 @@
-# APPNAME #
+# BIBEMVS #
 
 This project is the result of the course Ingegneria del Software 2,
-APPNAME is an e*commerce stile web service with the focus on national wines and spirits.
+APPNAME is an e*commerce stile web service with the focus on Italian national wines and spirits.
 
 # packages used (the order is randomic):
 * express: provides broad features for building web and mobile applications, is a MUST for developing application like this
