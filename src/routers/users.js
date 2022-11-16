@@ -22,17 +22,22 @@ router.get('/:id', getUser, (req, res) => {
 })
 // Creating one
 router.post('/', async (req, res) => {
-    const hashed = await hashing(req.body.password);
-    const user = new User({
-        username: req.body.username,
-        password: hashed,
-        email: req.body.email
-    })
-    try {
-        const newUser = await user.save()
-        res.status(201).json(newUser)
-    } catch (err) {
-        res.status(400).json({ message: err.message })
+    const tmp = await User.findOne({ username: req.body.username });
+    if (tmp == null) {
+        const hashed = await hashing(req.body.password);
+        const user = new User({
+            username: req.body.username,
+            password: hashed,
+            email: req.body.email
+        })
+        try {
+            const newUser = await user.save()
+            res.status(201).json(newUser)
+        } catch (err) {
+            res.status(400).json({ message: err.message })
+        }
+    } else {
+        res.status(409).json('Username already in use');
     }
 })
 // Updating one

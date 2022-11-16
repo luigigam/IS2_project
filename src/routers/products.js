@@ -18,9 +18,9 @@ router.get('/', async (req, res) => {
 router.get('/:id', getProduct, (req, res) => {
     res.send(res.product)
 })
+
 // Creating one
 router.post('/', async (req, res) => {
-    const seller = await Seller.findOne({ business_name: req.body.seller })
     const product = new Product({
         name: req.body.name,
         place_of_production: req.body.place_of_production,
@@ -34,6 +34,7 @@ router.post('/', async (req, res) => {
         res.status(400).json({ message: err.message })
     }
 })
+
 // Updating one
 router.patch('/:id', getProduct, async (req, res) => {
     if (req.body.name != null) {
@@ -63,11 +64,13 @@ router.delete('/:id', getProduct, async (req, res) => {
     }
 })
 
-// Getting all of one seller
-router.get('/:id', getSeller, authenticateToken, async (req, res) => {
+// Getting all of the authenticate seller
+router.get('/authseller', authenticateToken, async (req, res) => {
     try {
         const products = await Product.find()
-        res.json(products.filter(product => product.seller === req.seller.business_name))
+        const any_user = req.any_user
+        console.log(any_user.business_name)
+        res.json(products.filter(product => product.seller === any_user.business_name))
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
