@@ -14,7 +14,8 @@ const productSchema = new mongoose.Schema({
         default: false
     },
     seller: {
-        type: String
+        type: String,
+        required: true
     }
 })
 

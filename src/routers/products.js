@@ -1,9 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const Product = require('../models/product')
-const Seller = require('../models/seller')
-const authenticateToken = require('../middlewares/authenticateToken')
-const getSeller = require('../routers/sellers')
 
 // Getting all
 router.get('/', async (req, res) => {
@@ -59,18 +56,6 @@ router.delete('/:id', getProduct, async (req, res) => {
     try {
         await res.product.remove()
         res.json({ message: 'Deleted Product' })
-    } catch (err) {
-        res.status(500).json({ message: err.message })
-    }
-})
-
-// Getting all of the authenticate seller
-router.get('/authseller', authenticateToken, async (req, res) => {
-    try {
-        const products = await Product.find()
-        const any_user = req.any_user
-        console.log(any_user.business_name)
-        res.json(products.filter(product => product.seller === any_user.business_name))
     } catch (err) {
         res.status(500).json({ message: err.message })
     }

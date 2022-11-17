@@ -6,6 +6,8 @@ const Seller = require("../models/seller");
 const hashing = require("../middlewares/encrypt_pssw");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Product = require('../models/product')
+const authenticate = require('../middlewares/authenticateToken')
 
 // Getting all
 router.get("/", async (req, res) => {
@@ -90,10 +92,7 @@ router.post("/login", async (req, res) => {
   }
   try {
     if (await bcrypt.compare(req.body.password, seller.password)) {
-      const accessToken = jwt.sign(
-        seller.toJSON(),
-        process.env.ACCESS_TOKEN_SECRET
-      );
+      const accessToken = jwt.sign(seller.toJSON(), process.env.ACCESS_TOKEN_SECRET);
       res.json({ accessToken: accessToken });
     } else {
       res.send("Not Allowed");
@@ -102,6 +101,15 @@ router.post("/login", async (req, res) => {
     res.status(500).send();
   }
 });
+
+router.get("/home/my-products", authenticate, async (req, res) => {
+  try {
+      const products = await Product.find()
+      res.json(products.filter(product => product.seller === req.any_user.business_name))
+  } catch (err) {
+      res.status(500).json({ message: err.message })
+  }
+})
 
 async function getSeller(req, res, next) {
   let seller;
@@ -118,5 +126,4 @@ async function getSeller(req, res, next) {
   next();
 }
 
-module.exports = getSeller;
 module.exports = router;
