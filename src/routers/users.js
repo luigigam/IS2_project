@@ -6,6 +6,8 @@ const User = require("../models/user")
 const hashing = require("../middlewares/encrypt_pssw")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const Product = require("../models/product")
+const authenticate = require("../middlewares/authenticateToken")
 
 // Getting all
 router.get("/", async (req, res) => {
@@ -68,6 +70,31 @@ router.delete("/:id", getUser, async (req, res) => {
 	}
 })
 
+let refreshTokens = []
+
+// new access token
+router.post("/token", (req, res) => {
+	const refreshToken = req.body.token
+	if (refreshToken == null) return res.sendStatus(401)
+	if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+	jwt.verify(
+		refreshToken,
+		process.env.REFRESH_TOKEN_SECRET,
+		async (err, user) => {
+			if (err) return res.sendStatus(403)
+			user = await User.findOne({ username: user.username })
+			const accessToken = generateAccessToken(user.toJSON())
+			res.json({ accessToken: accessToken })
+		}
+	)
+})
+
+// Logout
+router.delete('/user/logout', (req, res) => {
+	refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+	res.sendStatus(204)
+})
+
 // Login authentication
 router.post("/login", async (req, res) => {
 	const user = await User.findOne({ username: req.body.username })
@@ -76,11 +103,13 @@ router.post("/login", async (req, res) => {
 	}
 	try {
 		if (await bcrypt.compare(req.body.password, user.password)) {
-			const accessToken = jwt.sign(
+			const accessToken = generateAccessToken(user.toJSON())
+			const refreshToken = jwt.sign(
 				user.toJSON(),
-				process.env.ACCESS_TOKEN_SECRET
+				process.env.REFRESH_TOKEN_SECRET
 			)
-			res.json({ accessToken: accessToken })
+			refreshTokens.push(refreshToken)
+			res.json({ accessToken: accessToken, refreshToken: refreshToken })
 		} else {
 			res.send("Not Allowed")
 		}
@@ -88,6 +117,20 @@ router.post("/login", async (req, res) => {
 		res.status(500).send()
 	}
 })
+
+// user's homepage
+router.get("/home/all-products", authenticate, async (req, res) => {
+	try {
+		const products = await Product.find()
+		res.json(products)
+	} catch (err) {
+		res.status(500).json({ message: err })
+	}
+})
+
+function generateAccessToken(user) {
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' })
+}
 
 async function getUser(req, res, next) {
 	let user

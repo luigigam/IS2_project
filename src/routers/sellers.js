@@ -8,8 +8,6 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const Product = require("../models/product")
 const authenticate = require("../middlewares/authenticateToken")
-const seller = require("../models/seller")
-//const generateAccessToken = require("../middlewares/authenticateToken")
 
 // Getting all
 router.get("/", async (req, res) => {
@@ -87,6 +85,7 @@ router.delete("/:id", getSeller, async (req, res) => {
 
 let refreshTokens = []
 
+// new access token
 router.post("/token", (req, res) => {
 	const refreshToken = req.body.token
 	if (refreshToken == null) return res.sendStatus(401)
@@ -103,7 +102,8 @@ router.post("/token", (req, res) => {
 	)
 })
 
-router.delete('/user/logout', (req, res) => {
+// Logout
+router.delete('/seller/logout', (req, res) => {
 	refreshTokens = refreshTokens.filter(token => token !== req.body.token)
 	res.sendStatus(204)
 })
@@ -131,6 +131,7 @@ router.post("/login", async (req, res) => {
 	}
 })
 
+// seller's homepage
 router.get("/home/my-products", authenticate, async (req, res) => {
 	try {
 		const products = await Product.find()
