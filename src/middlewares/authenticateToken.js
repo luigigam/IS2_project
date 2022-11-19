@@ -12,4 +12,9 @@ function authenticate(req, res, next) {
 	})
 }
 
+/*function generateAccessToken(any_user) {
+	return jwt.sign(any_user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
+}*/
+
 module.exports = authenticate
+//module.exports = generateAccessToken

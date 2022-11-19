@@ -8,10 +8,11 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const Product = require("../models/product")
 const authenticate = require("../middlewares/authenticateToken")
+const seller = require("../models/seller")
+//const generateAccessToken = require("../middlewares/authenticateToken")
 
 // Getting all
 router.get("/", async (req, res) => {
-	const sellers = await Seller.find()
 	try {
 		const sellers = await Seller.find()
 		res.json(sellers)
@@ -84,6 +85,29 @@ router.delete("/:id", getSeller, async (req, res) => {
 	}
 })
 
+let refreshTokens = []
+
+router.post("/token", (req, res) => {
+	const refreshToken = req.body.token
+	if (refreshToken == null) return res.sendStatus(401)
+	if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+	jwt.verify(
+		refreshToken,
+		process.env.REFRESH_TOKEN_SECRET,
+		async (err, seller) => {
+			if (err) return res.sendStatus(403)
+			seller = await Seller.findOne({ username: seller.username })
+			const accessToken = generateAccessToken(seller.toJSON())
+			res.json({ accessToken: accessToken })
+		}
+	)
+})
+
+router.delete('/user/logout', (req, res) => {
+	refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+	res.sendStatus(204)
+})
+
 // Login authentication
 router.post("/login", async (req, res) => {
 	const seller = await Seller.findOne({ username: req.body.username })
@@ -92,11 +116,13 @@ router.post("/login", async (req, res) => {
 	}
 	try {
 		if (await bcrypt.compare(req.body.password, seller.password)) {
-			const accessToken = jwt.sign(
+			const accessToken = generateAccessToken(seller.toJSON())
+			const refreshToken = jwt.sign(
 				seller.toJSON(),
-				process.env.ACCESS_TOKEN_SECRET
+				process.env.REFRESH_TOKEN_SECRET
 			)
-			res.json({ accessToken: accessToken })
+			refreshTokens.push(refreshToken)
+			res.json({ accessToken: accessToken, refreshToken: refreshToken })
 		} else {
 			res.send("Not Allowed")
 		}
@@ -117,6 +143,10 @@ router.get("/home/my-products", authenticate, async (req, res) => {
 		res.status(500).json({ message: err.message })
 	}
 })
+
+function generateAccessToken(user) {
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' })
+}
 
 async function getSeller(req, res, next) {
 	let seller
