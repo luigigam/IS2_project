@@ -1,5 +1,4 @@
-# BIBEMVS
-![BIBEMVS](BIBEMVS_LOGO.png | width=100)
+# BIBEMVS <img src="BIBEMVS.png" alt="BIBEMVS" width="100"/>
 
 This project is the result of the course Ingegneria del Software 2,
 BIBEMVS is an e*commerce stile web service with the focus on Italian national wines and spirits.
