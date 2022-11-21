@@ -22,8 +22,12 @@ router.get("/", async (req, res) => {
 router.get("/:id", getUser, (req, res) => {
 	res.send(res.user)
 })
+
+router.get('/register', (req, res) => {
+    res.render('register.ejs')
+})
 // Creating one
-router.post("/newUser", async (req, res) => {
+router.post("/register", async (req, res) => {
 	const tmp = await User.findOne({ username: req.body.username })
 	if (tmp == null) {
 		const hashed = await hashing(req.body.password)
