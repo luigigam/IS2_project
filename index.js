@@ -25,9 +25,9 @@ mainRouter.use("/products", productsRouter)
 
 app.set('view-engine', 'ejs')
 
-/*app.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.render('index.ejs', { name: 'GIGGI' })
-})*/
+})
 
 mainRouter.get('/users/login', (req, res) => {
     res.render('login.ejs')

@@ -9,6 +9,8 @@ const jwt = require("jsonwebtoken")
 const Product = require("../models/product")
 const authenticate = require("../middlewares/authenticateToken")
 
+router.use(express.urlencoded({ extended: false }))
+
 router.get('/login', (req, res) => {
     res.render('user_login.ejs')
 })
@@ -43,12 +45,15 @@ router.post("/register", async (req, res) => {
 		})
 		try {
 			const newUser = await user.save()
-			res.status(201).json(newUser)
+			//res.status(201).json(newUser)
+			res.redirect('/api/users/login')
 		} catch (err) {
 			res.status(400).json({ message: err.message })
+			res.redirect('/api/users/register')
 		}
 	} else {
 		res.status(409).json("Username already in use")
+		res.redirect('/api/users/register')
 	}
 })
 // Updating one
