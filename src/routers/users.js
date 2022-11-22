@@ -9,6 +9,14 @@ const jwt = require("jsonwebtoken")
 const Product = require("../models/product")
 const authenticate = require("../middlewares/authenticateToken")
 
+router.get('/login', (req, res) => {
+    res.render('user_login.ejs')
+})
+
+router.get('/register', (req, res) => {
+    res.render('user_register.ejs')
+})
+
 // Getting all
 router.get("/", async (req, res) => {
 	try {
@@ -23,9 +31,6 @@ router.get("/:id", getUser, (req, res) => {
 	res.send(res.user)
 })
 
-router.get('/register', (req, res) => {
-    res.render('register.ejs')
-})
 // Creating one
 router.post("/register", async (req, res) => {
 	const tmp = await User.findOne({ username: req.body.username })
