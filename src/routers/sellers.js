@@ -32,9 +32,8 @@ router.post("/newSeller", async (req, res) => {
 			password: hashed,
 			email: req.body.email,
 			business_name: req.body.business_name,
-			adress: req.body.adress,
-			phone_number: req.body.phone_number,
-		})
+			adress: req.body.adress
+			})
 		try {
 			const newSeller = await seller.save()
 			res.status(201).json(newSeller)
@@ -61,9 +60,6 @@ router.patch("/:id", getSeller, async (req, res) => {
 	}
 	if (req.body.adress != null) {
 		res.seller.adress = req.body.adress
-	}
-	if (req.body.phone_number != null) {
-		res.seller.phone_number = req.body.phone_number
 	}
 	try {
 		const updatedSeller = await res.seller.save()

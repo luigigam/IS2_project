@@ -20,11 +20,7 @@ const sellerSchema = new mongoose.Schema({
 	adress: {
 		type: String,
 		required: true,
-	},
-	phone_number: {
-		type: Number,
-		required: true,
-	},
+	}
 })
 
 module.exports = mongoose.model("Sellers", sellerSchema)
