@@ -9,6 +9,16 @@ const jwt = require("jsonwebtoken")
 const Product = require("../models/product")
 const authenticate = require("../middlewares/authenticateToken")
 
+router.use(express.urlencoded({ extended: false }))
+
+router.get('/login', (req, res) => {
+    res.render('seller_login.ejs')
+})
+
+router.get('/register', (req, res) => {
+    res.render('seller_register.ejs')
+})
+
 // Getting all
 router.get("/", async (req, res) => {
 	try {
@@ -23,7 +33,7 @@ router.get("/:id", getSeller, (req, res) => {
 	res.send(res.seller)
 })
 // Creating one
-router.post("/newSeller", async (req, res) => {
+router.post("/register", async (req, res) => {
 	const tmp = await Seller.findOne({ username: req.body.username })
 	if (tmp == null) {
 		const hashed = await hashing(req.body.password)
@@ -36,12 +46,15 @@ router.post("/newSeller", async (req, res) => {
 			})
 		try {
 			const newSeller = await seller.save()
-			res.status(201).json(newSeller)
+			//res.status(201).json(newSeller)
+			res.redirect('/api/sellers/login')
 		} catch (err) {
 			res.status(400).json({ message: err.message })
+			res.redirect('/api/sellers/register')
 		}
 	} else {
 		res.status(409).json("Username already in use")
+		res.redirect('/api/sellers/register')
 	}
 })
 // Updating one
@@ -142,7 +155,7 @@ router.get("/home/my-products", authenticate, async (req, res) => {
 })
 
 function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' })
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
 }
 
 async function getSeller(req, res, next) {

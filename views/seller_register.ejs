@@ -1,5 +1,5 @@
-<h1>User Register</h1>
-<form action="/api/users/register" method="POST">
+<h1>Seller Register</h1>
+<form action="/api/sellers/register" method="POST">
     <div>
         <label for="username">Username</label>
         <input type="text" id="username" name="username" required>
@@ -12,7 +12,15 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" required>
     </div>
+    <div>
+        <label for="business_name">Buisness Name</label>
+        <input type="text" id="business_name" name="business_name" required>
+    </div>
+    <div>
+        <label for="adress">Adress</label>
+        <input type="text" id="adress" name="adress" required>
+    </div>
     <button type="submit">Register</button>
 </form>
-<a href="/api/users/login">User Login</a>
 <a href="/api/sellers/login">Seller Login</a>
+<a href="/api/users/login">User Login</a>
