@@ -9,7 +9,11 @@ const db = mongoose.connection
 db.on("error", (error) => console.error(error))
 db.once("open", () => console.log("Connected to Database"))
 
+app.set('view-engine', 'ejs')
+
 app.use(express.json())
+app.use('/favicon.ico', express.static('/favicon.ico'))
+app.use(express.static("public"))
 
 const mainRouter = express.Router()
 app.use("/api", mainRouter)
@@ -22,8 +26,6 @@ mainRouter.use("/sellers", sellersRouter)
 
 const productsRouter = require("./src/routers/products")
 mainRouter.use("/products", productsRouter)
-
-app.set('view-engine', 'ejs')
 
 app.get('/', (req, res) => {
     res.render('index.ejs', { name: 'GIGGI' })
