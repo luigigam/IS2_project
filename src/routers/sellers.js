@@ -138,7 +138,7 @@ router.post("/login", async (req, res) => {
 			)
 			refreshTokens.push(refreshToken)
 			res.json({ accessToken: accessToken, refreshToken: refreshToken })
-			//sessionStorage.setItem("token", accessToken)
+			sessionStorage.setItem("accessToken", accessToken)
 			//res.redirect("/api/sellers/home/my-products")
 		} else {
 			res.send("Not Allowed")
