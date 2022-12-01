@@ -31,8 +31,4 @@ app.get('/', (req, res) => {
     res.render('index.ejs', { name: 'GIGGI' })
 })
 
-mainRouter.get('/users/login', (req, res) => {
-    res.render('login.ejs')
-})
-
 app.listen(3000, () => console.log("Server running on port ", 3000))

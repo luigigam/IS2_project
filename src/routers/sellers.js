@@ -11,13 +11,18 @@ const authenticate = require("../middlewares/authenticateToken")
 
 router.use(express.urlencoded({ extended: false }))
 
-router.get('/login', (req, res) => {
-    res.render('seller_login.ejs')
+router.get("/login", (req, res) => {
+	res.render("seller_login.ejs")
 })
 
-router.get('/register', (req, res) => {
-    res.render('seller_register.ejs')
+router.get("/register", (req, res) => {
+	res.render("seller_register.ejs")
 })
+
+/*router.get('/home/my-products', (req, res) => {
+    res.render('homepage.ejs')
+})
+*/
 
 // Getting all
 router.get("/", async (req, res) => {
@@ -42,19 +47,19 @@ router.post("/register", async (req, res) => {
 			password: hashed,
 			email: req.body.email,
 			business_name: req.body.business_name,
-			adress: req.body.adress
-			})
+			adress: req.body.adress,
+		})
 		try {
 			const newSeller = await seller.save()
 			//res.status(201).json(newSeller)
-			res.redirect('/api/sellers/login')
+			res.redirect("/api/sellers/login")
 		} catch (err) {
 			res.status(400).json({ message: err.message })
-			res.redirect('/api/sellers/register')
+			res.redirect("/api/sellers/register")
 		}
 	} else {
 		res.status(409).json("Username already in use")
-		res.redirect('/api/sellers/register')
+		res.redirect("/api/sellers/register")
 	}
 })
 // Updating one
@@ -112,8 +117,8 @@ router.post("/token", (req, res) => {
 })
 
 // Logout
-router.delete('/seller/logout', (req, res) => {
-	refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+router.delete("/seller/logout", (req, res) => {
+	refreshTokens = refreshTokens.filter((token) => token !== req.body.token)
 	res.sendStatus(204)
 })
 
@@ -121,6 +126,7 @@ router.delete('/seller/logout', (req, res) => {
 router.post("/login", async (req, res) => {
 	const seller = await Seller.findOne({ username: req.body.username })
 	if (seller == null) {
+		//res.redirect('/api/sellers/login')
 		return res.status(400).send("Cannot find seller")
 	}
 	try {
@@ -132,17 +138,39 @@ router.post("/login", async (req, res) => {
 			)
 			refreshTokens.push(refreshToken)
 			res.json({ accessToken: accessToken, refreshToken: refreshToken })
+			//sessionStorage.setItem("token", accessToken)
+			//res.redirect("/api/sellers/home/my-products")
 		} else {
 			res.send("Not Allowed")
+			res.redirect('/api/sellers/login')
 		}
 	} catch {
 		res.status(500).send()
+		res.redirect('/api/sellers/login')
 	}
 })
 
 // seller's homepage
 router.get("/home/my-products", authenticate, async (req, res) => {
 	try {
+		/*var bearer_token = sessionStorage.getItem("token")
+		var bearer = "Bearer " + bearer_token
+		fetch("../api/sellers/home/my-products", {
+			method: "GET",
+			withCredentials: true,
+			credentials: "include",
+			headers: {
+				Authorization: bearer,
+				"Content-Type": "application/json",
+			},
+		})
+			.then((resp) => resp.json())
+			.catch((error) =>
+				this.setState({
+					isLoading: false,
+					message: "Something bad happened " + error,
+				})
+			)*/
 		const products = await Product.find()
 		res.json(
 			products.filter(
@@ -155,7 +183,7 @@ router.get("/home/my-products", authenticate, async (req, res) => {
 })
 
 function generateAccessToken(user) {
-	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+	return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1h" })
 }
 
 async function getSeller(req, res, next) {
